@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velocrypt - Profile</title>
+  <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+  <script src="/static/js/fingerprint.js"></script>
+  <style>
+    /* Global styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bs-dark);
+      color: var(--bs-light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    
+    /* Header styles */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: var(--bs-gray-900);
+      border-bottom: 1px solid var(--bs-gray-700);
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: var(--bs-cyan);
+      font-size: 1.8rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .nav-links a {
+      color: var(--bs-cyan);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      background-color: var(--bs-cyan);
+      color: var(--bs-dark);
+    }
+    
+    /* Content container */
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: var(--bs-gray-800);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Profile styles */
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: var(--bs-cyan);
+      color: var(--bs-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 0 auto 20px;
+    }
+    
+    .profile-name {
+      font-size: 2rem;
+      color: var(--bs-light);
+      margin: 0;
+    }
+    
+    .profile-email {
+      color: var(--bs-gray-400);
+      margin-top: 5px;
+    }
+    
+    /* Profile content */
+    .profile-section {
+      margin-bottom: 30px;
+    }
+    
+    .profile-section h2 {
+      color: var(--bs-cyan);
+      font-size: 1.4rem;
+      border-bottom: 1px solid var(--bs-gray-700);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .profile-info {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 15px;
+    }
+    
+    .profile-label {
+      font-weight: bold;
+      color: var(--bs-gray-300);
+    }
+    
+    .profile-value {
+      color: var(--bs-light);
+    }
+    
+    /* Activity section */
+    .activity-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .activity-item {
+      padding: 15px;
+      border-bottom: 1px solid var(--bs-gray-700);
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-time {
+      color: var(--bs-gray-500);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+    
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+      border: none;
+    }
+    
+    .btn-primary {
+      background-color: var(--bs-cyan);
+      color: var(--bs-dark);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--bs-teal);
+    }
+    
+    .btn-danger {
+      background-color: var(--bs-danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #bb2d3b;
+    }
+    
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    /* Alerts */
+    .alert {
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .alert-success {
+      background-color: var(--bs-success);
+      color: white;
+    }
+    
+    .alert-danger {
+      background-color: var(--bs-danger);
+      color: white;
+    }
+    
+    .alert-info {
+      background-color: var(--bs-info);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Velocrypt</h1>
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('chat_home') }}">Chat</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+  
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <div class="profile-header">
+      <div class="profile-avatar">
+        {{ current_user.username[0].upper() }}
+      </div>
+      <h1 class="profile-name">{{ current_user.username }}</h1>
+      <div class="profile-email">{{ current_user.email }}</div>
+    </div>
+    
+    <div class="profile-section">
+      <h2>Account Information</h2>
+      <div class="profile-info">
+        <div class="profile-label">Member Since:</div>
+        <div class="profile-value">{{ current_user.created_at.strftime('%B %d, %Y') }}</div>
+        
+        <div class="profile-label">Last Login:</div>
+        <div class="profile-value">
+          {% if current_user.last_login %}
+            {{ current_user.last_login.strftime('%B %d, %Y at %H:%M') }}
+          {% else %}
+            N/A
+          {% endif %}
+        </div>
+        
+        <div class="profile-label">Account Status:</div>
+        <div class="profile-value">
+          {% if current_user.is_active %}
+            <span style="color: var(--bs-success);">Active</span>
+          {% else %}
+            <span style="color: var(--bs-danger);">Inactive</span>
+          {% endif %}
+        </div>
+        
+        <div class="profile-label">IP Address:</div>
+        <div class="profile-value">{{ current_user.ip_address or 'Not available' }}</div>
+      </div>
+    </div>
+    
+    <div class="profile-section">
+      <h2>Chat Activity</h2>
+      {% if current_user.groups|length > 0 %}
+        <div class="profile-info">
+          <div class="profile-label">Chat Groups:</div>
+          <div class="profile-value">{{ current_user.groups|length }}</div>
+          
+          <div class="profile-label">Total Messages:</div>
+          <div class="profile-value">{{ current_user.sent_messages.count() }}</div>
+        </div>
+        
+        <h3 style="font-size: 1.1rem; margin: 20px 0 10px;">Your Groups</h3>
+        <ul class="activity-list">
+          {% for group in current_user.groups %}
+            <li class="activity-item">
+              <div><strong>{{ group.name }}</strong></div>
+              <div>{{ group.description or 'No description' }}</div>
+              <div class="activity-time">Created: {{ group.created_at.strftime('%B %d, %Y') }}</div>
+              <a href="{{ url_for('chat_group', group_id=group.id) }}" style="color: var(--bs-cyan); text-decoration: none; margin-top: 5px; display: inline-block;">
+                Open Chat
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You haven't joined any chat groups yet.</p>
+        <a href="{{ url_for('chat_home') }}" class="btn btn-primary" style="display: inline-block; margin-top: 10px;">
+          Start Chatting
+        </a>
+      {% endif %}
+    </div>
+    
+    <div class="actions">
+      <button class="btn btn-primary" onclick="location.href='{{ url_for('chat_home') }}'">Chat Groups</button>
+      <button class="btn btn-primary" onclick="location.href='{{ url_for('index') }}'">Browser</button>
+    </div>
+  </div>
+  
+  <script>
+    // Get new fingerprint data and save to profile
+    document.addEventListener('DOMContentLoaded', function() {
+      // Submit fingerprint in the background
+      setTimeout(function() {
+        const fingerprint = generateBrowserFingerprint();
+        
+        fetch('/api/fingerprint', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fingerprint: fingerprint.raw,
+            fingerprintHash: fingerprint.hash
+          }),
+          credentials: 'same-origin'
+        }).then(response => {
+          if (!response.ok) {
+            console.error('Error updating fingerprint');
+          }
+        }).catch(error => {
+          console.error('Failed to update fingerprint:', error);
+        });
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
