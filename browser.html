@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CheckMate by Velocrypt</title>
+  <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .auth-nav {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .auth-nav a {
+      color: var(--bs-cyan);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .auth-nav a:hover {
+      background-color: var(--bs-cyan);
+      color: var(--bs-dark);
+    }
+    
+    .user-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .welcome-message {
+      color: var(--bs-light);
+    }
+    
+    .alert {
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    
+    .alert-success {
+      background-color: var(--bs-success);
+      color: white;
+    }
+    
+    .alert-info {
+      background-color: var(--bs-info);
+      color: white;
+    }
+    
+    .alert-danger {
+      background-color: var(--bs-danger);
+      color: white;
+    }
+    
+    /* Loading indicator */
+    .loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(33, 37, 41, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--bs-gray-700);
+      border-top: 5px solid var(--bs-cyan);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="tabs-container">
+    <div class="header-container">
+      <h1>CheckMate By Velocrypt</h1>
+      
+      <div class="auth-nav">
+        {% if current_user.is_authenticated %}
+          <div class="user-status">
+            <span class="welcome-message">Welcome, {{ current_user.username }}</span>
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+          </div>
+        {% else %}
+          <a href="{{ url_for('login') }}" target="_blank">Login</a>
+          <a href="{{ url_for('signup') }}" target="_blank">Sign up</a>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="tabs-header">
+      <!-- Tabs will be created dynamically -->
+      <div class="new-tab-btn">+</div>
+    </div>
+    
+    <div class="tab-content">
+      <div class="url-input-container">
+        <input type="text" id="url-input" placeholder="Enter a URL (e.g., example.com)">
+        <button id="submit-url-btn">Go</button>
+      </div>
+      
+      <!-- Tab iframe containers will be created dynamically -->
+    </div>
+  </div>
+
+  <script>
+    // Register the advanced service worker with improved caching
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', { scope: '/' })
+        .then(function (registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+
+          // Force update check on every reload
+          registration.update();
+
+          navigator.serviceWorker.ready.then(function () {
+            console.log('Service Worker is active and ready');
+          });
+        })
+        .catch(function (error) {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+  </script>
+
+  <script src="/static/js/tabs.js"></script>
+</body>
+</html>
