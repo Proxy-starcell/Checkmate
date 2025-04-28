@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velocrypt Signup</title>
+  <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+  <script src="/static/js/fingerprint.js"></script>
+  <style>
+    /* Center the content */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px 0;
+      background-color: var(--bs-dark);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Main container for layout */
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+      background: var(--bs-gray-800);
+      padding: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    /* Styling for the title */
+    h1 {
+      color: var(--bs-cyan);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    /* Form styles */
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--bs-light);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid var(--bs-gray-600);
+      border-radius: 5px;
+      background-color: var(--bs-gray-700);
+      color: var(--bs-light);
+    }
+
+    .text-danger {
+      color: var(--bs-danger);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .btn-primary {
+      padding: 12px 25px;
+      width: 100%;
+      font-size: 1.1rem;
+      background-color: var(--bs-cyan);
+      color: var(--bs-dark);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--bs-teal);
+    }
+
+    .alert {
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .alert-danger {
+      background-color: var(--bs-danger);
+      color: white;
+    }
+
+    .alert-success {
+      background-color: var(--bs-success);
+      color: white;
+    }
+
+    .login-link {
+      margin-top: 20px;
+      color: var(--bs-light);
+    }
+
+    .login-link a {
+      color: var(--bs-cyan);
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .password-requirements {
+      font-size: 0.85rem;
+      color: var(--bs-gray-400);
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sign Up</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('signup') }}" id="signup-form">
+      {{ form.hidden_tag() }}
+      {{ form.fingerprint(id="fingerprint-field") }}
+      
+      <div class="form-group">
+        {{ form.username.label }}
+        {{ form.username(class="form-control", placeholder="Choose a username") }}
+        {% for error in form.username.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control", placeholder="Enter your email") }}
+        <div class="password-requirements">
+          Email will be validated with MX record lookup to ensure it's valid
+        </div>
+        {% for error in form.email.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="form-group">
+        {{ form.password.label }}
+        {{ form.password(class="form-control", placeholder="Choose a password") }}
+        <div class="password-requirements">
+          Password must be at least 8 characters
+        </div>
+        {% for error in form.password.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="form-group">
+        {{ form.password2.label }}
+        {{ form.password2(class="form-control", placeholder="Repeat your password") }}
+        {% for error in form.password2.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="form-group">
+        <div class="password-requirements">
+          Note: We use browser fingerprinting for enhanced security and to prevent multiple accounts per device.
+          We allow only one account per IP address.
+        </div>
+      </div>
+      
+      {{ form.submit(class="btn btn-primary") }}
+    </form>
+    
+    <script>
+      // Add fingerprint data to form before submission
+      document.addEventListener('DOMContentLoaded', function() {
+        const signupForm = document.getElementById('signup-form');
+        const fingerprintField = document.getElementById('fingerprint-field');
+        
+        signupForm.addEventListener('submit', function(e) {
+          if (!fingerprintField.value) {
+            e.preventDefault();
+            
+            // Generate fingerprint and add to form
+            const fingerprint = generateBrowserFingerprint();
+            fingerprintField.value = JSON.stringify(fingerprint.raw);
+            
+            // Use the native form submit button click
+            const submitButton = signupForm.querySelector('input[type="submit"]');
+            if (submitButton) {
+                submitButton.click();
+            }
+          }
+        });
+      });
+    </script>
+    
+    <div class="login-link">
+      Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+    </div>
+  </div>
+</body>
+</html>
